@@ -1,0 +1,6 @@
+#confluent-kafka[avro]==1.1.0
+confluent-kafka[avro]
+#faust==1.7.4
+faust
+#tornado==6.0.3
+tornado
