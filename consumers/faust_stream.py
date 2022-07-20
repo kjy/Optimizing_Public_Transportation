@@ -51,7 +51,29 @@ table = app.Table(
 # "line" is the color of the station. So if the `Station` record has the field `red` set to true,
 # then you would set the `line` of the `TransformedStation` record to the string `"red"`
 #
-#
+
+@app.agent(topic)
+async def transform(stations):
+    
+    async for station in stations:
+        if station.red:
+            line = 'red'
+        elif station.blue:
+            line = 'blue'
+        elif station.green:
+            line = 'green'
+        else:
+            logger.debug(f"Can't parse line color with station_id = {station.station_id}")
+            line = ''
+
+        transformed_station = TransformedStation(
+            station_id=station.station_id,
+            station_name=station.station_name,
+            order=station.order,
+            line=line
+        )
+        # write to faust table
+        table[station.id] = transformed_station
 
 
 if __name__ == "__main__":

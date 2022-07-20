@@ -56,7 +56,6 @@ class Turnstile(Producer):
         # TODO: Complete this function by emitting a message to the turnstile topic for the number
         # of entries that were calculated
         for i in range(num_entries):
-
             self.producer.produce(
                 topic=self.topic_name,
                 key_schema = self.key_schema,

@@ -65,7 +65,7 @@ class Producer:
         # TODO: Write code that creates the topic for this producer if it does not already exist on
         # the Kafka Broker.
         client = AdminClient({"bootstrap.servers": "PLAINTEXT://localhost:9092"})
-        topic_meta = client.list_topics()
+        #topic_meta = client.list_topics()
 
         futures = client.create_topics(
                 [
@@ -76,8 +76,8 @@ class Producer:
                         config={
                             "cleanup.policy": "delete",
                             "compression.type": "lz4",
-                            "delete.retention.ms": "100",
-                            "file.delete.delay.ms": "100",
+                            "delete.retention.ms": "2000",
+                            "file.delete.delay.ms": "2000",
                         },
                     )
                 ]
@@ -88,6 +88,7 @@ class Producer:
                 print("topic created")
             except Exception as e:
                 print(f"failed to create topic {topic}: {e}")
+                
         logger.info("topic creation kafka integration incomplete - skipping")
 
     def time_millis(self):
