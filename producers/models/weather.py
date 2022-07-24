@@ -89,7 +89,7 @@ class Weather(Producer):
         #    # TODO: What Headers need to bet set?
         #    #
         #    #
-            headers={"Content-Type": "application/vnd.kafka.json.v2+json"},
+            headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
         #            # TODO: Provide key schema, value schema, and records
             data=json.dumps(
                 {

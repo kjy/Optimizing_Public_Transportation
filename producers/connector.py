@@ -58,17 +58,23 @@ def configure_connector():
                # TODO
                "incrementing.column.name": "stop_id",
                # TODO
-               "topic.prefix": "postgres_conn",
+               "topic.prefix": "",  #"postgres_conn"
                # TODO
-               "poll.interval.ms": "50000",
+               "poll.interval.ms": "10000",
            }
        }),
     )
 
     ## Ensure a healthy response was given
-    resp.raise_for_status()
-    logging.debug("connector created successfully")
+    try:
+        resp.raise_for_status()
+    except:
+        print(f"failed creating connector: {json.dumps(resp.json(), indent=2)}")
+        exit(1)
 
+    logging.debug("connector created successfully")
+    
 
 if __name__ == "__main__":
     configure_connector()
+
