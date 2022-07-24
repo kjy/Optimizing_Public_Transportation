@@ -39,7 +39,7 @@ class Station(Producer):
         #
         #
         #topic_name = f"{station_name}" # TODO: Come up with a better topic name
-        topic_name = f"station.arrivals"
+        topic_name = f"station.arrivals.{station_name}"
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,
@@ -106,3 +106,4 @@ class Station(Producer):
         """Prepares the producer for exit by cleaning up the producer"""
         self.turnstile.close()
         super(Station, self).close()
+

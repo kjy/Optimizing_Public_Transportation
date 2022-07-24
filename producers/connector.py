@@ -33,7 +33,7 @@ def configure_connector():
     # Make sure to think about what an appropriate topic prefix would be, and how frequently Kafka
     # Connect should run this connector (hint: not very often!)
     logger.info("connector code not completed skipping connector creation")
-    resp = requests.post(
+    resp = requests.put(
        KAFKA_CONNECT_URL,
        headers={"Content-Type": "application/json"},
        data=json.dumps({
@@ -58,9 +58,9 @@ def configure_connector():
                # TODO
                "incrementing.column.name": "stop_id",
                # TODO
-               "topic.prefix": "stations_conn",
+               "topic.prefix": "postgres_conn",
                # TODO
-               "poll.interval.ms": "500",
+               "poll.interval.ms": "50000",
            }
        }),
     )

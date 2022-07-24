@@ -7,6 +7,14 @@ from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from tornado import gen
 
+# Topics are divided into partitions. A partition represents the unit of parallelism in Kafka. In general, a higher 
+# number of partitions means higher throughput. Within each partition, each job has a specific offset that consumers 
+# use to keep track of how far they have progressed through the stream. Consumers may use Kafka partitions as semantic partitions as well.
+
+# If you provide a key to messages in Kafka, they will be partitioned by that key allowing you to do per-key processing.
+# In some sense, you can think of Kafka as categorizing your data and providing it to you ordered by key. 
+
+#Yes, one partition is consumed by one consumer in one group. Y.C.
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +45,9 @@ class KafkaConsumer:
         #
         #
         self.broker_properties = {
-                #
-                # TODO
-                'bootstrap.servers': 'PLAINTEXT://localhost:9094',
-                'default.topic.config': {'auto.offset.reset': 'earliest'},
-                'group.id': topic_name_pattern
+            'bootstrap.servers': BROKER_URL,
+            'group.id':'0',
+            'auto.offset.reset':'earliest' if self.offset_earliest else 'latest'
         }
 
         # TODO: Create the Consumer, using the appropriate type.
@@ -50,25 +56,24 @@ class KafkaConsumer:
             self.consumer = AvroConsumer(self.broker_properties)
         else:
             self.consumer = Consumer(self.broker_properties)
-            pass
 
         #
         #
         # TODO: Configure the AvroConsumer and subscribe to the topics. Make sure to think about
         # how the `on_assign` callback should be invoked.
-        self.consumer.subscribe([topic_name_pattern],on_assign=self.on_assign)
+logging.info(f'Subscribing to topic pattern: {self.topic_name_pattern}'')      self.consumer.subscribe([topic_name_pattern],on_assign=self.on_assign)
         
-
-    def on_assign(self, consumer, partitions):
-        """Callback for when topic assignment takes place"""
         # TODO: If the topic is configured to use `offset_earliest` set the partition offset to
         # the beginning or earliest
-        logger.info("on_assign is incomplete - skipping")
+    def on_assign(self, consumer, partitions):
+        """Callback for when topic assignment takes place"""
+
         for partition in partitions:
-            consumer.seek(partition)
+            partition.offset = OFFSET_BEGINNING
 
         logger.info("partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
+        logger.info("partitions successfully assigned")
 
     async def consume(self):
         """Asynchronously consumes data from kafka topic"""
@@ -88,17 +93,18 @@ class KafkaConsumer:
         #
         #
         try:
-            msg = self.consumer.poll(timeout=1.0)
-            if msg is not None:
-                if msg.error() is not None:
-                    self.message_handler(msg)
-                    return 1
-                else:
-                    logger.error(msg.error())
-                    return 0
-        except SerializerError as error:
-            logger.error(f"Error consuming data: {error.message}")
+            message = self.consumer.poll(self.consume_timeout)
+        except Exception:
+            logger.info(f'Error while polling')
+
+        if message is None:
+            logging.info(f'No message found')
             return 0
+        elif message.error():
+            logger.info(f'Error while consuming message')
+        else:
+            self.message_handler(message)
+            return 1
 
         # logger.info("_consume is incomplete - skipping")
 
@@ -110,3 +116,4 @@ class KafkaConsumer:
         # TODO: Cleanup the kafka consumer
         #
         self.consumer.close()
+

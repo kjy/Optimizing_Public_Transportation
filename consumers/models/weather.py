@@ -22,3 +22,6 @@ class Weather:
         self.temperature = message_value['temperature']
         self.status = message_value['status']
 
+
+
+

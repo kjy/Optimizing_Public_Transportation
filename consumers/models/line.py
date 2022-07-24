@@ -59,15 +59,15 @@ class Line:
         # TODO: Based on the message topic, call the appropriate handler.
         message_topic = message.topic()
 
-        if message_topic == "faust_stations_conn_table": # Set the conditional correctly to the stations Faust Table
+        if message_topic == "stations.table": # Set the conditional correctly to the stations Faust Table
             try:
                 value = json.loads(message.value())
                 self._handle_station(value)
             except Exception as e:
                 logger.fatal("bad station? %s, %s", value, e)
-        elif 'arrivals' in message_topic: # Set the conditional to the arrival topic
+        elif 'org.chicago.cta.station.arrivals.{station_name}' in message_topic: # Set the conditional to the arrival topic
             self._handle_arrival(message)
-        elif "Turnstile_summary" in message_topic: # Set the conditional to the KSQL Turnstile Summary Topic
+        elif "TURNSTILE_SUMMARY" in message_topic: # Set the conditional to the KSQL Turnstile Summary Topic
             json_data = json.loads(message.value())
             station_id = json_data.get("STATION_ID")
             station = self.stations.get(station_id)
@@ -79,3 +79,4 @@ class Line:
             logger.debug(
                 "unable to find handler for message from topic %s", message.topic
             )
+

@@ -6,6 +6,7 @@ import faust
 
 logger = logging.getLogger(__name__)
 
+# We will leverage Faust Stream Processing to transform the raw Stations table that we ingested from Kafka Connect. The raw format from the database has more data than we need, and the line color information is not conveniently configured. To remediate this, we're going to ingest data from our Kafka Connect topic, and transform the data.
 
 # Faust will ingest records from Kafka in this format
 class Station(faust.Record):
@@ -33,29 +34,31 @@ class TransformedStation(faust.Record):
 #   places it into a new topic with only the necessary information.
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 # TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-topic = app.topic("stations_conn", value_type=Station)
+topic = app.topic("postgres_conn_stations", value_type=Station)
 # TODO: Define the output Kafka Topic
-out_topic = app.topic("faust_stations_conn_table", partitions=1)
+out_topic = app.topic("stations.table", partitions=1)
+
 # TODO: Define a Faust Table
 table = app.Table(
-   "faulst_stations_conn_table",
+   "transformed_station",
    default=TransformedStation,
    partitions=1,
    changelog_topic = out_topic,
 )
 
 
-#
+#In this project, we are using the table to keep track the latest data related to the station id.
 #
 # TODO: Using Faust, transform input `Station` records into `TransformedStation` records. Note that
 # "line" is the color of the station. So if the `Station` record has the field `red` set to true,
 # then you would set the `line` of the `TransformedStation` record to the string `"red"`
 #
-
+#
 @app.agent(topic)
 async def transform(stations):
-    
+
     async for station in stations:
+        
         if station.red:
             line = 'red'
         elif station.blue:
@@ -72,9 +75,7 @@ async def transform(stations):
             order=station.order,
             line=line
         )
-        # write to faust table
-        table[station.id] = transformed_station
-
+        table[station.station_id] = transformedStation
 
 if __name__ == "__main__":
     app.main()

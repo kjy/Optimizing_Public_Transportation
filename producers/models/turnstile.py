@@ -38,10 +38,10 @@ class Turnstile(Producer):
         #
         #
         super().__init__(
-            f"kafka.chicago.turnstiles", # TODO: Come up with a better topic name
+            f"raw_turnstile", # TODO: Come up with a better topic name
             key_schema=Turnstile.key_schema, 
             value_schema=Turnstile.value_schema, 
-            num_partitions=5,
+            num_partitions=3,
             num_replicas=1,
         )
         self.station = station
@@ -60,7 +60,7 @@ class Turnstile(Producer):
                 topic=self.topic_name,
                 key_schema = self.key_schema,
                 value_schema = self.value_schema,
-                key={"timestamp": self.time_millis()},
+                key={"timestamp": self.time_millis()}, 
                 value={
                         "station_id" : self.station.station_id,
                         "station_name" : self.station.name,

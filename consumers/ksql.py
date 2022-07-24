@@ -21,13 +21,14 @@ KSQL_URL = "http://localhost:8088"
 #       Make sure to cast the COUNT of station id to `count`
 #       Make sure to set the value format to JSON
 
+#Topic in turnstile.py should be the same as KAFKA_TOPIC in ksql.py
 KSQL_STATEMENT = """
 CREATE TABLE turnstile (
     station_id INT,
     station_name VARCHAR,
     line VARCHAR
 ) WITH (
-    KAFKA_TOPIC='kafka.chicago.turnstiles',
+    KAFKA_TOPIC='raw_turnstile',  
     VALUE_FORMAT='AVRO',
     KEY='station_id'
 );
@@ -59,13 +60,17 @@ def execute_statement():
             }
         ),
     )
+    return
 
-    # Ensure that a 2XX status code was returned
-    try:
-        resp.raise_for_status()
-    except requests.exceptions.HTTPError as e: 
-        print(f"KSQL error message {e}")
-        logger.info("Error with KSQL POST request.")
+## Ensure a healthy response was given
+try:
+    resp.raise_for_status()
+except:
+    exit(1)
+    
+                
+    
+    #logger.debug("connector created successfully")
 
 
 if __name__ == "__main__":
