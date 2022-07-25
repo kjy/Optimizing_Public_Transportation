@@ -19,9 +19,9 @@ class Lines:
 
     def process_message(self, message):
         """Processes a station message"""
-        if "org.chicago.cta.station" in message.topic():
+        if "stations.arrivals.{station_name}" in message.topic():
             value = message.value()
-            if message.topic() == "org.chicago.cta.stations.table.v1":
+            if message.topic() == "station.table":
                 value = json.loads(value)
             if value["line"] == "green":
                 self.green_line.process_message(message)
