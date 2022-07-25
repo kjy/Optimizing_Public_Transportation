@@ -77,7 +77,7 @@ def run_server():
             is_avro=False,
         ),
         KafkaConsumer(
-            "station.arrivals.",
+            "station.arrivals.{station_name}",
             lines.process_message,
             offset_earliest=True,
         ),
