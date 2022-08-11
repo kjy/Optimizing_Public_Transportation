@@ -78,6 +78,21 @@ class Station(Producer):
                  "prev_direction" : prev_direction
             },
         )
+#         self.producer.produce(
+#             topic=self.topic_name,
+#             key={"timestamp": self.time_millis()},            
+#             key_schema=self.key_schema,            
+#             value_schema=self.key_value,
+#             value={
+#                 "station_id": self.station_id,
+#                 "train_id": train.train_id,
+#                 "direction": direction,
+#                 "line": self.color.name,
+#                 "train_status": train.status.name,
+#                 "prev_station_id": prev_station_id,
+#                 "prev_direction": prev_direction
+#             },
+#         ) 
 
     def __str__(self):
         return "Station | {:^5} | {:<30} | Direction A: | {:^5} | departing to {:<30} | Direction B: | {:^5} | departing to {:<30} | ".format(
@@ -106,4 +121,3 @@ class Station(Producer):
         """Prepares the producer for exit by cleaning up the producer"""
         self.turnstile.close()
         super(Station, self).close()
-

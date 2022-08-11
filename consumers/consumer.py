@@ -56,12 +56,11 @@ class KafkaConsumer:
             self.consumer = AvroConsumer(self.broker_properties)
         else:
             self.consumer = Consumer(self.broker_properties)
+            pass
 
-        #
-        #
         # TODO: Configure the AvroConsumer and subscribe to the topics. Make sure to think about
         # how the `on_assign` callback should be invoked.
-logging.info(f'Subscribing to topic pattern: {self.topic_name_pattern}'')      self.consumer.subscribe([topic_name_pattern],on_assign=self.on_assign)
+        self.consumer.subscribe([topic_name_pattern],on_assign=self.on_assign)
         
         # TODO: If the topic is configured to use `offset_earliest` set the partition offset to
         # the beginning or earliest
@@ -116,4 +115,3 @@ logging.info(f'Subscribing to topic pattern: {self.topic_name_pattern}'')      s
         # TODO: Cleanup the kafka consumer
         #
         self.consumer.close()
-

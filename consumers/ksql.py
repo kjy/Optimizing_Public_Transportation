@@ -28,7 +28,7 @@ CREATE TABLE turnstile (
     station_name VARCHAR,
     line VARCHAR
 ) WITH (
-    KAFKA_TOPIC='raw_turnstile',  
+    KAFKA_TOPIC='topic_turnstile',  
     VALUE_FORMAT='AVRO',
     KEY='station_id'
 );
@@ -62,11 +62,11 @@ def execute_statement():
     )
     return
 
-## Ensure a healthy response was given
-try:
-    resp.raise_for_status()
-except:
-    exit(1)
+    ## Ensure a healthy response was given
+    try:
+        resp.raise_for_status()
+    except:
+        exit(1)
     
                 
     

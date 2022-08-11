@@ -37,7 +37,7 @@ class Weather(Producer):
         #
         #
         super().__init__(
-            topic_name = "weather.status", # TODO
+            topic_name="weather", # TODO
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
         )
@@ -71,6 +71,7 @@ class Weather(Producer):
         self.status = random.choice(list(Weather.status))
 
     def run(self, month):
+        #logger.debug("weather run function working")
         self._set_weather(month)
         # TODO: Complete the function by posting a weather event to REST Proxy. Make sure to
         # specify the Avro schemas and verify that you are using the correct Content-Type header.
