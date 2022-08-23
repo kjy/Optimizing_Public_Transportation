@@ -6,7 +6,7 @@ When the project is complete, you will be able to monitor a website to watch tra
 
 [Demo Part 1 - running simulation](https://www.loom.com/share/be51e2f271654cb7b77c62522387a181)
 
-[Demo Part 2 - output of messages after code review](https://www.loom.com/share/c9b9efaa31be4851bf90fc8144cb8a92)
+[Demo Part 2 - final output of messages after code review](https://www.loom.com/share/c9b9efaa31be4851bf90fc8144cb8a92)
 
 ![Final User Interface](images/ui.png)
 
