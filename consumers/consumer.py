@@ -32,7 +32,7 @@ class KafkaConsumer:
 
         self.broker_properties = {
             'bootstrap.servers': 'PLAINTEXT://localhost:9094',
-            'default.topic.config': {'auto.offset.reset': 'earliest'},
+            'default.topic.config': {"auto.offset.reset": "earliest" if offset_earliest else "latest"},
             'group.id': topic_name_pattern            
         }
 
@@ -43,18 +43,22 @@ class KafkaConsumer:
             self.consumer = Consumer(self.broker_properties)
             pass
 
-        
         self.consumer.subscribe([topic_name_pattern],on_assign=self.on_assign)
-
+        
     def on_assign(self, consumer, partitions):
         """Callback for when topic assignment takes place"""
-        for partition in partitions:
-            consumer.seek(partition)
+        # TODO: If the topic is configured to use `offset_earliest` set the partition offset to
+        # the beginning or earliest
+        logger.info("on_assign is incomplete - skipping")
+#         for partition in partitions:
+#             consumer.seek(partition)
+        # You need not to seek for partition to get offset you need adjust offset to the beginning
+        from confluent_kafka import Consumer, OFFSET_BEGINNING
+        partition.offset = OFFSET_BEGINNING
         logger.info("partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
-
-
-
+        
+        
     async def consume(self):
         """Asynchronously consumes data from kafka topic"""
         while True:

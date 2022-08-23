@@ -5,7 +5,7 @@ In this project, you will construct a streaming event pipeline around Apache Kaf
 When the project is complete, you will be able to monitor a website to watch trains move from station to station.
 
 [Demo Part 1 - running simulation](https://www.loom.com/share/be51e2f271654cb7b77c62522387a181)
-[Demo Part 2 - output of messages](https://loom.com/share/53db9e6a4f394457922a74809d66f0b9)
+[Demo Part 2 - output of messages](https://loom.com/share/c9b9efaa31be4851bf90fc8144cb8a92)
 
 ![Final User Interface](images/ui.png)
 
