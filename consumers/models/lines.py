@@ -37,3 +37,4 @@ class Lines:
             self.blue_line.process_message(message)
         else:
             logger.info("ignoring non-lines message %s", message.topic())
+

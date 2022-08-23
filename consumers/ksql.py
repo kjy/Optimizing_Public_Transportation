@@ -18,13 +18,10 @@ CREATE TABLE Turnstile
     station_id INT,
     station_name VARCHAR,
     line VARCHAR
-
 ) WITH (
-
     KAFKA_TOPIC='topic_turnstile',
     VALUE_FORMAT='avro',
     KEY='station_id'
-
 );
 CREATE TABLE Turnstile_summary
 WITH (VALUE_FORMAT='json') AS

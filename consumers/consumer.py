@@ -48,10 +48,11 @@ class KafkaConsumer:
 
     def on_assign(self, consumer, partitions):
         """Callback for when topic assignment takes place"""
-        for p in partitions:
-            consumer.seek(p)
-        logger.info(f"partitions assigned for {self.topic_name_pattern}")
+        for partition in partitions:
+            consumer.seek(partition)
+        logger.info("partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
+
 
 
     async def consume(self):
@@ -63,7 +64,9 @@ class KafkaConsumer:
             await gen.sleep(self.sleep_secs)
 
     def _consume(self):
-        """Polls for a message. Returns 1 if a message was received, 0 otherwise"""
+        # TODO: Poll Kafka for messages. Make sure to handle any errors or exceptions.
+        # Additionally, make sure you return 1 when a message is processed, and 0 when no message
+        # is retrieved.
         try:
             msg = self.consumer.poll(timeout=1.0)
             if msg is not None:

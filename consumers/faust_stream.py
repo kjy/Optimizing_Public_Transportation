@@ -31,7 +31,9 @@ class TransformedStation(faust.Record):
 
 #   places it into a new topic with only the necessary information.
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
-topic = app.topic("stations_conn.", value_type=Station)
+
+topic = app.topic("stations_conn.stations", value_type=Station)
+
 out_topic = app.topic("faust_stations_conn_table", partitions=1)
 
 table = app.Table(
@@ -42,27 +44,25 @@ table = app.Table(
 )
 
 @app.agent(topic)
-async def transform(stations):
+async def process_stations(sts):
 
-    async for station in stations:
-        
-        if station.red:
-            line = 'red'
-        elif station.blue:
-            line = 'blue'
-        elif station.green:
-            line = 'green'
+    async for s in sts:
+        if s.blue:
+            l = 'blue'
+        elif s.red:
+            l = 'red'
+        elif s.green:
+            l = 'green'
         else:
-            logger.debug(f"Can't parse line color with station_id = {station.station_id}")
-            line = ''
+            l = ''
 
-        transformed_station = TransformedStation(
-            station_id=station.station_id,
-            station_name=station.station_name,
-            order=station.order,
-            line=line
+        table[s.station_id] = TransformedStation(
+            line=l,
+            order=s.order,
+            station_id=s.station_id,
+            station_name=s.station_name             
         )
-        table[station.station_id] = transformedStation
 
 if __name__ == "__main__":
     app.main()
+

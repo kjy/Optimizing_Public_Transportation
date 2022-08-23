@@ -92,3 +92,4 @@ class Station(Producer):
         """Prepares the producer for exit by cleaning up the producer"""
         self.turnstile.close()
         super(Station, self).close()
+

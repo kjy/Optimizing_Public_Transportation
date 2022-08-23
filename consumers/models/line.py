@@ -78,4 +78,3 @@ class Line:
         else:
             logger.debug(
                 "unable to find handler for message from topic %s", message.topic
-            )
